@@ -16,32 +16,29 @@ function App()  {
   const [humidity, setHumidity] = useState(94)
   const [wind, setWind] = useState(2.67)
   const [country, setCountry] = useState("IN")
-  const [dataFetched, setDataFetched] = useState(false)
   const [bgImage, setBgImage] = useState('url("https://source.unsplash.com/1600x900/?cloudy")')
 
-  let fetchData;
+  const fetchData = async (e) => {
+    e.preventDefault()
+    try{
+    const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${userLocation}&appid=${process.env.REACT_APP_API_KEY}`)
+    const data = await res.data
+    setDegrees(parseInt(data.main.temp-273))
+    setLocation(data.name)
+    setDescription(data.weather[0].description)
+    setBgImage(`url("https://source.unsplash.com/1600x900/?${description}")`)
+    setIcon(data.weather[0].icon)
+    console.log(bgImage)
+    setHumidity(data.main.humidity)
+    setWind(data.wind.speed)
+    setCountry(data.sys.country)
+    }catch(err){
+      alert("please enter a valid location")
+    }
+  }
 
   useEffect(() => {
-    fetchData = async (e) => {
-      e.preventDefault()
-      try{
-      const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${userLocation}&appid=${process.env.REACT_APP_API_KEY}`)
-      const data = await res.data
-      setDegrees(parseInt(data.main.temp-273))
-      setLocation(data.name)
-      setDescription(data.weather[0].description)
-      setBgImage(`url("https://source.unsplash.com/1600x900/?${description}")`)
-      setIcon(data.weather[0].icon)
-      console.log(bgImage)
-      setHumidity(data.main.humidity)
-      setWind(data.wind.speed)
-      setCountry(data.sys.country)
-      setDataFetched(true)
-      }catch(err){
-        alert("please enter a valid location")
-      }
-    }
-  }, [])
+    fetchData() }, [])
 
   return (
       <div className='App' style={{backgroundImage:`${bgImage}`,backgroundSize:"cover"}}>
