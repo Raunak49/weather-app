@@ -16,7 +16,6 @@ function App()  {
   const [humidity, setHumidity] = useState(94)
   const [wind, setWind] = useState(2.67)
   const [country, setCountry] = useState("IN")
-  const [bgImage, setBgImage] = useState('url("https://source.unsplash.com/1600x900/?cloudy")')
 
   const fetchData = async (e) => {
     e.preventDefault()
@@ -26,9 +25,7 @@ function App()  {
     setDegrees(parseInt(data.main.temp-273))
     setLocation(data.name)
     setDescription(data.weather[0].description)
-    setBgImage(`url("https://source.unsplash.com/1600x900/?${description}")`)
     setIcon(data.weather[0].icon)
-    console.log(bgImage)
     setHumidity(data.main.humidity)
     setWind(data.wind.speed)
     setCountry(data.sys.country)
@@ -38,10 +35,13 @@ function App()  {
   }
 
   useEffect(() => {
-    fetchData() }, [])
+    fetchData(); 
+  }, [])
+
+  let bImage = `url("https://source.unsplash.com/1600x900/?${description}")`;
 
   return (
-      <div className='App' style={{backgroundImage:`${bgImage}`,backgroundSize:"cover"}}>
+      <div className='App' style={{backgroundImage:`${bImage}`,backgroundSize:"cover"}}>
       <div className="weather">
         <Input 
           text={(e) => setUserLocation(e.target.value)}
